@@ -24,9 +24,9 @@ random.seed(9001)
 from random import randint
 import statistics
 
-__author__ = "Your Name"
+__author__ = ""
 __copyright__ = "Universite Paris Diderot"
-__credits__ = ["Your Name"]
+__credits__ = ["Batista Reda"]
 __license__ = "GPL"
 __version__ = "1.0.0"
 __maintainer__ = "Your Name"
@@ -73,7 +73,27 @@ def main():
     Main program function
     """
     # Get arguments
-    args = get_arguments()
+    args = get_arguments() 
+def read_fastq(fastq_file) : 
+    """
+     Generate a k-mer generator.
+
+        Parameters 
+        ---------- 
+        name : fastq_file
+            Contain .
+
+        Returns
+        ------- 
+        k-mer_gen  
+            K_mer generator.
+    """ 
+
+with open("eva71_two_reads.fq") as fastq_file:
+	for line in fastq_file:
+		yield(next(fastq_file)) 
+		next(fastq_file) 
+		next(fastq_file)
 
 if __name__ == '__main__':
     main()
