@@ -55,14 +55,54 @@ def get_arguments():
     parser = argparse.ArgumentParser(description=__doc__, usage=
                                      "{0} -h"
                                      .format(sys.argv[0]))
-    parser.add_argument('-i', dest='fastq_file', type=isfile,
+    parser.add_argument('eva71_two_reads.fq', dest='fastq_file', type=isfile,
                         required=True, help="Fastq file")
-    parser.add_argument('-k', dest='kmer_size', type=int,
+    parser.add_argument('21', dest='kmer_size', type=int,
                         default=21, help="K-mer size (default 21)")
     parser.add_argument('-o', dest='output_file', type=str,
                         default=os.curdir + os.sep + "contigs.fasta",
                         help="Output contigs in fasta file")
-    return parser.parse_args()
+    return parser.parse_args() 
+
+def read_fastq(fastq_file) : 
+    """
+     Generate a sequence generator.
+
+        Parameters 
+        ---------- 
+        name : args
+            Contain the fastq file .
+
+        Returns
+        ------- 
+        yield(next(fastq_file))  
+            Sequence generator.
+    """ 
+
+with open(file) as fastq_file:
+	for line in fastq_file:
+		yield(next(fastq_file)) 
+		next(fastq_file) 
+		next(fastq_file) 
+
+def cut_kmer(sequence,kmer_size) : 
+	""" 
+     Generate a k-mer generator.
+
+        Parameters 
+        ---------- 
+        name : sequence,kmer-size
+            The sequence to cut. 
+			the size of the k-mer
+
+        Returns
+        ------- 
+        k-mer_gen  
+            K_mer generator. 
+ 
+	"""   
+	for seq in range(len(sequence)-kmer_size+1): 
+		yield(sequence[i:i+kmer_size])
 
 
 #==============================================================
@@ -74,26 +114,7 @@ def main():
     """
     # Get arguments
     args = get_arguments() 
-def read_fastq(fastq_file) : 
-    """
-     Generate a k-mer generator.
 
-        Parameters 
-        ---------- 
-        name : fastq_file
-            Contain .
-
-        Returns
-        ------- 
-        k-mer_gen  
-            K_mer generator.
-    """ 
-
-with open("eva71_two_reads.fq") as fastq_file:
-	for line in fastq_file:
-		yield(next(fastq_file)) 
-		next(fastq_file) 
-		next(fastq_file)
-
+	first_function=read_fastq('eva71_two_reads.fq')
 if __name__ == '__main__':
     main()
