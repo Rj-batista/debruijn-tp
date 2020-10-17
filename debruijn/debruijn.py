@@ -19,7 +19,7 @@ import argparse
 import os
 import sys
 import networkx as nx
-import matplotlib
+import matplotlib as plt
 from operator import itemgetter
 import random
 random.seed(9001)
@@ -83,9 +83,37 @@ def build_kmer_dict(fasta, kmer_size):
 		for k_mer in cut_kmer(sequence, kmer_size): 
 			if k_mer not in k_mer_dict.keys() : 
 				k_mer_dict[k_mer]=0	
-			k_mer_dict[k_mer]+=1   
-	print(k_mer_dict)	
-	return(k_mer_dict)
+			k_mer_dict[k_mer]+=1   	
+	return(k_mer_dict)  
+    
+def build_graph(k_mer_dict): 
+    G = nx.DiGraph() 
+    for kmer, poids in k_mer_dict.items(): 
+        G.add_edge(kmer[:-1],kmer[1:], weight=poids) 
+    #nx.draw(G,with_labels=True) 
+    #plt.pyplot.show() 
+    return(G)
+    
+def get_starting_node(graph): 
+    nodes = list(graph.nodes()) 
+    starting_node = []
+    for node in nodes:
+        if not list(graph.predecessors(node)):
+            starting_node.append(node) 
+    return(starting_node) 
+
+def get_sink_nodes(graph): 
+    nodes = list(graph.nodes()) 
+    sink_node = []
+    for node in nodes:
+        if not list(graph.successors(node)):
+            sink_node.append(node) 
+    return(sink_node) 
+
+def get_contigs(graph,st_node,sn_node): 
+ 
+
+    
 #==============================================================
 # Main program
 #==============================================================
@@ -95,9 +123,12 @@ def main():
     """
     # Get arguments
 args = get_arguments()
-build_kmer_dict(args.fastq_file, args.kmer_size)
+kmer_dict=build_kmer_dict(args.fastq_file, args.kmer_size) 
+dbj_graph=build_graph(kmer_dict) 
+st_node=get_starting_node(dbj_graph) 
+sn_node=get_sink_nodes(dbj_graph)
+contigs=get_contigs(dbj_graph,st_node,sn_node)
 
-	#first_function=read_fastq()
 if __name__ == '__main__':
 	main() 	
 	"""	
