@@ -60,7 +60,7 @@ def get_arguments():
     parser.add_argument('-i', dest='fastq_file', type=isfile,
                         required=True, help="Fastq file")
     parser.add_argument('-k', dest='kmer_size', type=int,
-                        default=5, help="K-mer size (default 21)")
+                        default=21, help="K-mer size (default 21)")
     parser.add_argument('-o', dest='output_file', type=str,
                         default=os.curdir + os.sep + "contigs.fasta",
                         help="Output contigs in fasta file")
@@ -109,9 +109,17 @@ def get_sink_nodes(graph):
         if not list(graph.successors(node)):
             sink_node.append(node) 
     return(sink_node) 
-
+  
 def get_contigs(graph,st_node,sn_node): 
- 
+    list_contigs=[]
+    for starting in st_node:
+        for sink in sn_node: 
+            path = list(nx.all_simple_paths(graph, starting, sink)) 
+    contig=path[0][0]
+    for i in range(1,len(path[0])): 
+        contig = contig+path[0][i][-1] 
+    list_contigs.append((contig, len(contig))) 
+    return(list_contigs)
 
     
 #==============================================================
@@ -126,7 +134,7 @@ args = get_arguments()
 kmer_dict=build_kmer_dict(args.fastq_file, args.kmer_size) 
 dbj_graph=build_graph(kmer_dict) 
 st_node=get_starting_node(dbj_graph) 
-sn_node=get_sink_nodes(dbj_graph)
+sn_node=get_sink_nodes(dbj_graph) 
 contigs=get_contigs(dbj_graph,st_node,sn_node)
 
 if __name__ == '__main__':
